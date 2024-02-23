@@ -36,7 +36,7 @@ jobs:
         working-directory: ./arosaje-backend
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/alexandrelefay/arosaje-mspr/arosaje-backend:latest .
+        run: docker build -t ghcr.io/alexandrelefay/arosaje-backend/arosaje-backend:latest .
         working-directory: ./arosaje-backend
 
       - name: Log in to GitHub Container Registry
@@ -47,5 +47,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Docker image to GitHub Packages
-        run: docker push ghcr.io/alexandrelefay/arosaje-mspr/arosaje-backend:latest
+        run: docker push ghcr.io/alexandrelefay/arosaje-backend/arosaje-backend:latest
 
