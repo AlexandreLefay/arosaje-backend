@@ -51,7 +51,7 @@ public class UserController {
     /**
      * Updates an existing user.
      *
-     * @param id              The ID of the user to update.
+     * @param id The ID of the user to update.
      * @param userSaveRequest The UserCreationDTO containing the updated information for the user.
      * @return ResponseEntity containing the updated UserDTO.
      */
@@ -82,5 +82,29 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+
+    /**
+     * Retrieves a user by their username.
+     *
+     * @param username The username of the user to retrieve.
+     * @return ResponseEntity containing the UserDTO.
+     */
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable String username) {
+        UserDTO user = userService.getUserByUsername(username);
+        return ResponseEntity.ok(user);
+    }
+
+    /**
+     * Retrieves a user by their email.
+     *
+     * @param email The email of the user to retrieve.
+     * @return ResponseEntity containing the UserDTO.
+     */
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
+        UserDTO user = userService.getUserByEmail(email);
+        return ResponseEntity.ok(user);
     }
 }

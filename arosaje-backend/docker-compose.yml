@@ -1,27 +1,32 @@
-version: '3.8'
+version: '3.8'  # Specifies the Docker Compose file format version.
+
 services:
   app:
-    build: .
-    environment:
-      DB_HOST: db
-      DB_USERNAME: mspr1_user
-      DB_PASSWORD: mspr1_password
-    depends_on:
-      - db
+    image: maven:3.8.3-openjdk-17  # Uses the Maven image with OpenJDK 17 to build and run the Spring Boot application.
+    command: mvn spring-boot:run  # Executes the Spring Boot application using Maven.
     ports:
-      - "9000:9000"
+      - "9000:9000"  # Maps port 9000 of the container to port 9000 on the host.
+    volumes:
+      - .:/usr/src/app:rw  # Mounts the current directory to /usr/src/app in the container with read/write access.
+    working_dir: /usr/src/app  # Sets the working directory inside the container where commands are run.
+    environment:  # Defines environment variables passed to the container.
+      DB_HOST: db  # Database host environment variable, linked to the 'db' service.
+      DB_USERNAME: mspr1_user  # Database username environment variable.
+      DB_PASSWORD: mspr1_password  # Database password environment variable.
+    depends_on:
+      - db  # Ensures the 'db' service is started before the 'app' service.
 
   db:
-    image: mariadb
+    image: mariadb  # Specifies the MariaDB image to use for the database service.
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: mspr1
-      MYSQL_USER: mspr1_user
-      MYSQL_PASSWORD: mspr1_password
+      MYSQL_ROOT_PASSWORD: root_password  # Sets the root password for MariaDB.
+      MYSQL_DATABASE: mspr1  # Names the database to be created on container startup.
+      MYSQL_USER: mspr1_user  # Creates a user and sets the username for the database.
+      MYSQL_PASSWORD: mspr1_password  # Sets the password for the database user.
     ports:
-      - "3306:3306"
+      - "8000:3306"  # Maps port 8000 on the host to port 3306 in the container.
     volumes:
-      - db-data:/var/lib/mysql
+      - db-data:/var/lib/mysql  # Mounts the 'db-data' volume to persist database data.
 
 volumes:
-  db-data:
+  db-data:  # Declares a volume named 'db-data' for storing the database data persistently.

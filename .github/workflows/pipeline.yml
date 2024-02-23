@@ -1,11 +1,3 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Java CI with Maven
 
 on:
@@ -13,6 +5,8 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+
+permissions: write-all
 
 jobs:
   build:
@@ -36,12 +30,13 @@ jobs:
         run: mvn test --file pom.xml -Dspring.profiles.active=test
         working-directory: ./arosaje-backend
 
+
       - name: Lint with Checkstyle
         run: mvn checkstyle:checkstyle
         working-directory: ./arosaje-backend
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/alexandrelefay/arosaje-mspr/arosaje-backend:latest .
+        run: docker build -t ghcr.io/alexandrelefay/arosaje-backend/arosaje-backend:latest .
         working-directory: ./arosaje-backend
 
       - name: Log in to GitHub Container Registry
@@ -52,5 +47,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Docker image to GitHub Packages
-        run: docker push ghcr.io/alexandrelefay/arosaje-mspr/arosaje-backend:latest
-        working-directory: ./arosaje-backend
+        run: docker push ghcr.io/alexandrelefay/arosaje-backend/arosaje-backend:latest
+
