@@ -57,6 +57,7 @@ public class LoginController {
         // Ajouter le token dans l'en-tête X-Authorization de la réponse
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Authorization", jwt);
+        headers.add("Access-Control-Expose-Headers", "X-Authorization"); // Expose le header X-Authorization
 
         // Retourner la réponse avec les détails de l'utilisateur et le JWT dans l'en-tête
         return ResponseEntity.ok().headers(headers).body(new LoginResponse(username, userId, roles.toString()));
