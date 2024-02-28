@@ -26,6 +26,9 @@ public class UserService {
      * Error messages.
      */
     private static final String USER_NOT_FOUND = "No user found with id {}";
+    private static final String USER_NOT_FOUND_USERNAME = "No user found with usernamme {}";
+
+    private static final String USER_NOT_FOUND_email = "No user found with email {}";
 
 
     public UserService(UserRepository userRepository, UserMapper userMapper) {
@@ -130,5 +133,40 @@ public class UserService {
                     return new UserNotFoundException(id);
                 });
     }
+
+    /**
+     * Retrieves a user by email.
+     *
+     * @param email the email of the user to retrieve
+     * @return the retrieved user as a UserDTO
+     * @throws UserNotFoundException if the user cannot be found
+     */
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.info(USER_NOT_FOUND_email, email);
+                    return new UserNotFoundException(email, "email");
+                });
+
+        return userMapper.userToUserDTO(user);
+    }
+
+    /**
+     * Retrieves a user by username.
+     *
+     * @param username the username of the user to retrieve
+     * @return the retrieved user as a UserDTO
+     * @throws UserNotFoundException if the user cannot be found
+     */
+    public UserDTO getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    log.info(USER_NOT_FOUND_USERNAME, username);
+                    return new UserNotFoundException(username, "username");
+                });
+
+        return userMapper.userToUserDTO(user);
+    }
+
 }
 
