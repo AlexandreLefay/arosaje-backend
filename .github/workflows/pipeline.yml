@@ -1,51 +1,118 @@
-name: Java CI with Maven
+name: PIPELINE - Java CI with Maven and SonarCloud Analysis
 
+# Defines when the workflow should run
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master" ]  # Trigger on push events to the master branch
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master" ]  # Also trigger on pull requests to the master branch
+    types: [opened, synchronize, reopened]  # Types of pull request events to trigger on
 
+# Sets permissions for the workflow
 permissions: write-all
 
 jobs:
+  # Job for building the project using Maven
   build:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-latest  # Specifies the runner environment
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up JDK 17
+      - uses: actions/checkout@v3  # Checks out the repository code
+      - name: Set up JDK 17  # Sets up Java Development Kit 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-
-      - name: Build with Maven
+      - name: Build with Maven  # Compiles the project and packages it
         run: mvn -B package --file pom.xml -Dspring.profiles.active=test
         working-directory: ./arosaje-backend
+      - uses: actions/upload-artifact@v2  # Uploads the built JAR as an artifact
+        with:
+          name: backend-jar
+          path: ./arosaje-backend/target/backend-0.0.1-SNAPSHOT.jar
 
-      - name: Run tests
+  # Job for running tests and linting
+  test-and-style:
+    needs: build  # Depends on the build job
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Run tests  # Executes unit tests
         run: mvn test --file pom.xml -Dspring.profiles.active=test
         working-directory: ./arosaje-backend
-
-
-      - name: Lint with Checkstyle
+      - name: Lint with Checkstyle  # Runs Checkstyle for code quality analysis
         run: mvn checkstyle:checkstyle
         working-directory: ./arosaje-backend
 
-      - name: Build Docker image
-        run: docker build -t ghcr.io/alexandrelefay/arosaje-backend/arosaje-backend:latest .
+  # Job for building and pushing Docker image
+  docker-build-and-push:
+    needs: test-and-style  # Depends on the test-and-style job
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v2  # Downloads the JAR artifact from the build job
+        with:
+          name: backend-jar
+          path: ./arosaje-backend/target
+      - name: Build Docker image  # Builds the Docker image using the Dockerfile
+        run: docker build -t ghcr.io/alexandrelefay/arosaje-mspr/arosaje-backend:latest .
         working-directory: ./arosaje-backend
-
-      - name: Log in to GitHub Container Registry
+      - name: Log in to GitHub Container Registry  # Logs into GitHub Container Registry
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push Docker image to GitHub Packages  # Pushes the built image to GitHub Packages
+        run: docker push ghcr.io/alexandrelefay/arosaje-mspr/arosaje-backend:latest
 
-      - name: Push Docker image to GitHub Packages
-        run: docker push ghcr.io/alexandrelefay/arosaje-backend/arosaje-backend:latest
+  # Job for deployment to Render
+  deploy-to-render:
+    needs: docker-build-and-push  # Depends on the successful Docker image build and push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'  # Conditional execution on push to master
+    steps:
+      - name: Trigger image to render.com  # Triggers the Render deployment using a curl command
+        run: curl https://api.render.com/deploy/srv-cncb5eacn0vc73f0abf0?key=03P-7j6L7rs
+
+  # Job for SonarCloud analysis
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository code
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      # Set up JDK 17
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      # Build the project using Maven
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml -Dspring.profiles.active=test
+        working-directory: ./arosaje-backend
+      # Generate coverage report
+      - name: Generate coverage report
+        run: mvn sonar:sonar -Dsonar.projectKey=AlexandreLefay_arosaje-backend -Dsonar.organization=alexandrelefay -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        working-directory: ./arosaje-backend
+      # Run SonarCloud Scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.projectKey=AlexandreLefay_arosaje-backend
+            -Dsonar.organization=alexandrelefay
+            -Dsonar.java.binaries=./arosaje-backend/target/classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=./arosaje-backend/target/site/jacoco/jacoco.xml
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
 
