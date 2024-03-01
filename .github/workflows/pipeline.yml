@@ -95,13 +95,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      # Build the project using Maven
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml -Dspring.profiles.active=test
-        working-directory: ./arosaje-backend
-      # Generate coverage report
-      - name: Generate coverage report
-        run: mvn sonar:sonar -Dsonar.projectKey=AlexandreLefay_arosaje-backend -Dsonar.organization=alexandrelefay -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      # Build the project and generate coverage report
+      - name: Build with Maven and generate coverage report
+        run: mvn -B clean verify --file pom.xml -Dspring.profiles.active=test
         working-directory: ./arosaje-backend
       # Run SonarCloud Scan
       - name: SonarCloud Scan
@@ -110,9 +106,7 @@ jobs:
           args: >
             -Dsonar.projectKey=AlexandreLefay_arosaje-backend
             -Dsonar.organization=alexandrelefay
-            -Dsonar.java.binaries=./arosaje-backend/target/classes
-            -Dsonar.coverage.jacoco.xmlReportPaths=./arosaje-backend/target/site/jacoco/jacoco.xml
+            -Dsonar.java.binaries=arosaje-backend/target/classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=arosaje-backend/target/site/jacoco/jacoco.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-
