@@ -25,7 +25,7 @@ public class UserController {
     private UserService userService;
 
     /**
-     * Creates a new user.
+     * Creates a new user..
      *
      * @param userSaveRequest The UserCreationDTO containing the new user's information.
      * @return ResponseEntity containing the created UserDTO.
