@@ -7,6 +7,8 @@ import fr.epsi.mspr.arosaje.entity.mapper.UserMapper;
 import fr.epsi.mspr.arosaje.exception.user.UserNotFoundException;
 import fr.epsi.mspr.arosaje.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,8 +21,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class UserService {
-    private UserRepository userRepository;
-    private UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     /**
      * Error messages.
@@ -47,6 +53,7 @@ public class UserService {
         User user = userMapper.userSaveRequestToUser(userSaveRequest);
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.userToUserDTO(userRepository.save(user));
     }
 
@@ -132,6 +139,7 @@ public class UserService {
                     log.info(USER_NOT_FOUND, id);
                     return new UserNotFoundException(id);
                 });
+        
     }
 
     /**
