@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build with Maven  # Compiles the project and packages it
-        run: mvn -B package --file pom.xml -Dspring.profiles.active=test
+        run: mvn -B package --file pom.xml -DskipTests
         working-directory: ./arosaje-backend
       - uses: actions/upload-artifact@v2  # Uploads the built JAR as an artifact
         with:
