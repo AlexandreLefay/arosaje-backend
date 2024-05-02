@@ -13,6 +13,7 @@ import fr.epsi.mspr.arosaje.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -98,6 +99,8 @@ public class MessageService {
         message.setSender(sender);
         message.setReceiver(receiver);
         message.setGuardianship(guardianship);
+        message.setCreatedAt(LocalDateTime.now());
+        message.setUpdatedAt(LocalDateTime.now());
         return messageMapper.messagetoMessageDTO(messageRepository.save(message));
     }
 
