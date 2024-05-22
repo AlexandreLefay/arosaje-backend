@@ -78,10 +78,11 @@ public class GuardianshipController {
      * @return the updated GuardianshipDTO.
      * @throws GuardianshipNotFoundException if the guardianship with the specified ID does not exist.
      */
-    @PutMapping("/{id}")
-    public GuardianshipDTO updateGuardianship(@Validated(MandatoryGuardianshipId.class) @RequestBody GuardianshipSaveRequest guardianshipSaveRequest) {
-        return guardianshipService.update(guardianshipSaveRequest);
+    @PatchMapping("/{id}")
+    public GuardianshipDTO updateGuardianship(@PathVariable Long id, @Validated(MandatoryGuardianshipId.class) @RequestBody GuardianshipSaveRequest guardianshipSaveRequest) {
+        return guardianshipService.update(id, guardianshipSaveRequest);
     }
+
 
     /**
      * Creates a new guardianship.
