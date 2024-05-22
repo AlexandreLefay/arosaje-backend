@@ -3,9 +3,7 @@ package fr.epsi.mspr.arosaje.entity.mapper;
 import fr.epsi.mspr.arosaje.entity.Guardianship;
 import fr.epsi.mspr.arosaje.entity.dto.guardianship.GuardianshipDTO;
 import fr.epsi.mspr.arosaje.entity.dto.guardianship.GuardianshipSaveRequest;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface GuardianshipMapper {
@@ -32,6 +30,7 @@ public interface GuardianshipMapper {
     /**
      * Overwrite a Guardianship with a GuardianshipSaveRequest
      */
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "ownerId", target = "ownerUser.id")
     @Mapping(source = "guardianId", target = "guardianUser.id")
     @Mapping(source = "plantId", target = "plant.id")

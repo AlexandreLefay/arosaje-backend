@@ -1,6 +1,7 @@
 package fr.epsi.mspr.arosaje.service.guardianship;
 
 import fr.epsi.mspr.arosaje.entity.Guardianship;
+import fr.epsi.mspr.arosaje.entity.Status;
 import fr.epsi.mspr.arosaje.entity.dto.guardianship.GuardianshipDTO;
 import fr.epsi.mspr.arosaje.entity.dto.guardianship.GuardianshipSaveRequest;
 import fr.epsi.mspr.arosaje.entity.mapper.GuardianshipMapper;

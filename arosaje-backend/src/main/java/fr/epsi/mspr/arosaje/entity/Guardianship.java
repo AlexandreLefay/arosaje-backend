@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,7 @@ public class Guardianship {
     private Plant plant;
 
     @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JoinColumn(name = "guardian_user_id", referencedColumnName = "id")
     private User guardianUser;
 

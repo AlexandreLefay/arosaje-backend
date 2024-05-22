@@ -13,6 +13,7 @@ import fr.epsi.mspr.arosaje.exception.plant.PlantNotFoundException;
 import fr.epsi.mspr.arosaje.exception.user.UserNotFoundException;
 import fr.epsi.mspr.arosaje.repository.GuardianshipRepository;
 import fr.epsi.mspr.arosaje.repository.StatusRepository;
+import fr.epsi.mspr.arosaje.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -43,6 +44,7 @@ public class GuardianshipService {
     private GuardianshipRepository guardianshipRepository;
     private StatusRepository statusRepository;
     private GuardianshipMapper guardianshipMapper;
+    private UserRepository userRepository;
     /**
      * Add @lazy to avoid circular dependency and @Autowired to inject the service.
      */
@@ -53,10 +55,11 @@ public class GuardianshipService {
     @Autowired
     private UserService userService;
 
-    public GuardianshipService(GuardianshipRepository guardianshipRepository, StatusRepository statusRepository, GuardianshipMapper guardianshipMapper) {
+    public GuardianshipService(GuardianshipRepository guardianshipRepository, StatusRepository statusRepository, GuardianshipMapper guardianshipMapper, UserRepository userRepository) {
         this.guardianshipRepository = guardianshipRepository;
         this.statusRepository = statusRepository;
         this.guardianshipMapper = guardianshipMapper;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -138,19 +141,59 @@ public class GuardianshipService {
      * @return the updated guardianship.
      * @throws GuardianshipNotFoundException if the guardianship with the specified ID does not exist.
      */
-    public GuardianshipDTO update(GuardianshipSaveRequest guardianshipSaveRequest) {
-
-        Guardianship guardianship = guardianshipRepository.findById(guardianshipSaveRequest.getId()).orElseThrow(() -> {
-            log.info(GUARDIANSHIP_NOT_FOUND, guardianshipSaveRequest.getId());
-            return new GuardianshipNotFoundException(guardianshipSaveRequest.getId());
+//    public GuardianshipDTO update(Long id, GuardianshipSaveRequest guardianshipSaveRequest) {
+//        Guardianship guardianship = guardianshipRepository.findById(id).orElseThrow(() -> {
+//            log.info(GUARDIANSHIP_NOT_FOUND, id);
+//            return new GuardianshipNotFoundException(id);
+//        });
+//
+//        Status status = statusRepository.findById(guardianshipSaveRequest.getStatusId()).orElse(null);
+//
+//        guardianship.setStatus(status);
+//        guardianshipMapper.updateGuardianshipFromGuardianshipSaveRequest(guardianshipSaveRequest, guardianship);
+//        return guardianshipMapper.guardianshipToGuardianshipDTO(guardianshipRepository.save(guardianship));
+//    }
+    public GuardianshipDTO update(Long id, GuardianshipSaveRequest guardianshipSaveRequest) {
+        Guardianship guardianship = guardianshipRepository.findById(id).orElseThrow(() -> {
+            log.info(GUARDIANSHIP_NOT_FOUND, id);
+            return new GuardianshipNotFoundException(id);
         });
 
-        Status status = statusRepository.findById(guardianshipSaveRequest.getStatusId()).orElse(null);
+        // Mise à jour de l'entité User pour guardian
+        if (guardianshipSaveRequest.getGuardianId() != null) {
+            User guardianUser = userRepository.findById(guardianshipSaveRequest.getGuardianId()).orElse(null);
+            guardianship.setGuardianUser(guardianUser);
+        }
 
-        guardianship.setStatus(status);
+        // Mise à jour de l'entité User pour owner
+        if (guardianshipSaveRequest.getOwnerId() != null) {
+            User ownerUser = userRepository.findById(guardianshipSaveRequest.getOwnerId()).orElse(null);
+            guardianship.setOwnerUser(ownerUser);
+        }
+
+        if (guardianshipSaveRequest.getTitle() != null) {
+            guardianship.setTitle(guardianshipSaveRequest.getTitle());
+        }
+
+        if (guardianshipSaveRequest.getDescription() != null) {
+            guardianship.setDescription(guardianshipSaveRequest.getDescription());
+        }
+
+//        if (guardianshipSaveRequest.getStartDate() != null) {
+//            guardianship.setStartDate(guardianshipSaveRequest.getStartDate());
+//        }
+//
+//        if (guardianshipSaveRequest.getEndDate() != null) {
+//            guardianship.setEndDate(guardianshipSaveRequest.getEndDate());
+//        }
+
+        // Autres mises à jour depuis le DTO
         guardianshipMapper.updateGuardianshipFromGuardianshipSaveRequest(guardianshipSaveRequest, guardianship);
+
+        // Sauvegarde des modifications
         return guardianshipMapper.guardianshipToGuardianshipDTO(guardianshipRepository.save(guardianship));
     }
+
 
     /**
      * Create a new guardianship.
