@@ -25,7 +25,7 @@ public class UserController {
     private UserService userService;
 
     /**
-     * Creates a new user..
+     * Creates a new user
      *
      * @param userSaveRequest The UserCreationDTO containing the new user's information.
      * @return ResponseEntity containing the created UserDTO.
@@ -35,6 +35,18 @@ public class UserController {
         UserDTO newUser = userService.createUser(userSaveRequest);
         return ResponseEntity.ok(newUser);
     }
+
+//    /**
+//     * Creates a new user from Google.
+//     *
+//     * @param userSaveRequest The UserCreationDTO containing the new user's information.
+//     * @return ResponseEntity containing the created UserDTO.
+//     */
+//    @PostMapping("/google")
+//    public ResponseEntity<UserDTO> createUserFromGoogle(@Validated(OptionalUserId.class)@RequestBody UserSaveRequest userSaveRequest) {
+//        UserDTO newUser = userService.createUserFromGoogle(userSaveRequest);
+//        return ResponseEntity.ok(newUser);
+//    }
 
     /**
      * Retrieves a user by their ID.

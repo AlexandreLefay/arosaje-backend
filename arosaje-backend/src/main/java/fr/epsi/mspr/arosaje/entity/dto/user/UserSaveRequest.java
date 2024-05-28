@@ -62,4 +62,14 @@ public class UserSaveRequest {
      * The user password
      */
     private String password;
+
+    /**
+     * The auth0Id of the user for google authentification
+     */
+    private String auth0Id;
+
+    /**
+     * The user's photo from google
+     */
+    private String photoUrl;
 }

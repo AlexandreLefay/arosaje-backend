@@ -12,11 +12,13 @@ public class LoginResponse {
     private String username;
     private int userId;
     private Set<String> roles;
+    private String jwt;
 
-    public LoginResponse(String username, int userId, String roles) {
+    public LoginResponse(String username, int userId, String roles, String jwt) {
         this.username = username;
         this.userId = userId;
         this.roles = Collections.singleton(roles);
+        this.jwt = jwt;
     }
 
 
