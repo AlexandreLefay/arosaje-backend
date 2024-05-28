@@ -1,18 +1,24 @@
 package fr.epsi.mspr.arosaje.service;
 
 import fr.epsi.mspr.arosaje.entity.User;
+import fr.epsi.mspr.arosaje.entity.dto.login.LoginResponse;
 import fr.epsi.mspr.arosaje.entity.dto.user.UserDTO;
 import fr.epsi.mspr.arosaje.entity.dto.user.UserSaveRequest;
 import fr.epsi.mspr.arosaje.entity.mapper.UserMapper;
 import fr.epsi.mspr.arosaje.exception.user.UserNotFoundException;
 import fr.epsi.mspr.arosaje.repository.UserRepository;
+import fr.epsi.mspr.arosaje.security.CustomUserDetails;
+import fr.epsi.mspr.arosaje.security.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +32,10 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MyUserDetailsService userDetailsService;
+    @Autowired
+    private JwtUtil jwtTokenUtil;
 
 
     /**
@@ -55,6 +65,43 @@ public class UserService {
         user.setUpdatedAt(LocalDateTime.now());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.userToUserDTO(userRepository.save(user));
+    }
+
+    public LoginResponse createUserFromGoogle(UserSaveRequest userSaveRequest) {
+        Optional<User> existingUserOpt = userRepository.findByAuth0Id(userSaveRequest.getAuth0Id());
+
+        if (existingUserOpt.isPresent()) {
+            log.info("User already exists with auth0Id {}", userSaveRequest.getAuth0Id());
+            CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(userSaveRequest.getUsername());
+            final String jwt = jwtTokenUtil.generateToken(userDetails);
+
+            User existingUser = existingUserOpt.get();
+            String username = userDetails.getUsername();
+            int userId = existingUser.getId();
+            Set<String> roles = userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toSet());
+
+            return new LoginResponse(username, userId, roles.toString(), jwt);
+        } else {
+            User user = userMapper.userSaveRequestToUser(userSaveRequest);
+            user.setAuth0Id(userSaveRequest.getAuth0Id());
+            user.setPhotoUrl(userSaveRequest.getPhotoUrl());
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
+            User savedUser = userRepository.save(user);
+
+            CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(userSaveRequest.getUsername());
+            final String jwt = jwtTokenUtil.generateToken(userDetails);
+
+            String username = userDetails.getUsername();
+            int userId = savedUser.getId();
+            Set<String> roles = userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toSet());
+
+            return new LoginResponse(username, userId, roles.toString(), jwt);
+        }
     }
 
     /**
@@ -139,7 +186,7 @@ public class UserService {
                     log.info(USER_NOT_FOUND, id);
                     return new UserNotFoundException(id);
                 });
-        
+
     }
 
     /**

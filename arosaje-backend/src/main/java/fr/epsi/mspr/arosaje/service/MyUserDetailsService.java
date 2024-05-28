@@ -35,8 +35,11 @@ public class MyUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé : " + username));
 
+        // Handle cases where password might be null (e.g., Google users)
+        String password = user.getPassword() != null ? user.getPassword() : "";
+
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                user.getUsername(), user.getPassword(), getAuthorities(user));
+                user.getUsername(), password, getAuthorities(user));
 
         return new CustomUserDetails(userDetails, user.getId(), user.getEmail(), user.isActive());
     }

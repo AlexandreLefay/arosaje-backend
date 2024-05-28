@@ -50,6 +50,16 @@ public class User {
     private boolean active;
 
     /**
+     * The auth0Id of the user for google authentification
+     */
+    private String auth0Id;
+
+    /**
+     * The user photo from google
+     */
+    private String photoUrl;
+
+    /**
      * The address of the user
      * @Embedded is used to embed the Address class into the User class,
      * so that the fields of the Address class are columns in the users table,
