@@ -101,7 +101,7 @@ jobs:
           args: >
             -Dsonar.projectKey=AlexandreLefay_arosaje-backend
             -Dsonar.organization=alexandrelefay
-            -Dsonar.java.binaries=arosaje-backend/target/classes
+            -Dsonar.java.binaries=target/classes
             -Dsonar.coverage.jacoco.xmlReportPaths=arosaje-backend/target/site/jacoco/jacoco.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
