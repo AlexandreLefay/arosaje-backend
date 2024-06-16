@@ -1,0 +1,9 @@
+{
+  "build": {
+    "type": "maven",
+    "goals": "package -DskipTests"
+  },
+    "deploy": {
+        "jarName": "./arosaje-backend/target/*.jar"
+    }
+}

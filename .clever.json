@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "app_id": "app_97876692-8ce7-420d-8213-43e3711c4060",
+      "org_id": "orga_82f049f4-971f-4f72-9b34-f62c8eefd676",
+      "deploy_url": "https://push-n3-par-clevercloud-customers.services.clever-cloud.com/app_97876692-8ce7-420d-8213-43e3711c4060.git",
+      "git_ssh_url": "git+ssh://git@push-n3-par-clevercloud-customers.services.clever-cloud.com/app_97876692-8ce7-420d-8213-43e3711c4060.git",
+      "name": "arosaje-clever-backend",
+      "alias": "arosaje-clever-backend"
+    }
+  ]
+}

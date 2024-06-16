@@ -1,8 +1,38 @@
-.idea/
-.vscode/settings.json
+# Maven
+target/
+!**/src/main/**
+!**/src/test/**
 
-arosaje-frontend/package-lock.json
 
-arosaje-backend/.expo/settings.json
+!.mvn/wrapper/maven-wrapper.jar
 
-arosaje-backend/.expo/
+# IDE - IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+# Logs
+*.log
+
+# Java bytecode
+*.class
+
+# Package files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Other files
+*.swp
+*~
+/target/
