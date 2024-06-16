@@ -6,7 +6,12 @@
       "deploy_url": "https://push-n3-par-clevercloud-customers.services.clever-cloud.com/app_137a51a9-0d24-4e0b-a77a-f736a54cf0f1.git",
       "git_ssh_url": "git+ssh://git@push-n3-par-clevercloud-customers.services.clever-cloud.com/app_137a51a9-0d24-4e0b-a77a-f736a54cf0f1.git",
       "name": "arosaje-clever-backend",
-      "alias": "arosaje-clever-backend"
+      "alias": "arosaje-clever-backend",
+      "deploy": {
+        "docker": {
+          "dockerfile": "Dockerfile"
+        }
+      }
     }
   ]
 }
