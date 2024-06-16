@@ -25,11 +25,10 @@ jobs:
           cache: maven
       - name: Build with Maven  # Compiles the project and packages it
         run: mvn -B package --file pom.xml -Dspring.profiles.active=test
-        working-directory: ./arosaje-backend
       - uses: actions/upload-artifact@v2  # Uploads the built JAR as an artifact
         with:
           name: backend-jar
-          path: ./arosaje-backend/target/backend-0.0.1-SNAPSHOT.jar
+          path: ./target/backend-0.0.1-SNAPSHOT.jar
 
   # Job for running tests and linting
   test-and-style:
@@ -44,10 +43,8 @@ jobs:
           distribution: 'temurin'
       - name: Run tests  # Executes unit tests
         run: mvn test --file pom.xml -Dspring.profiles.active=test
-        working-directory: ./arosaje-backend
       - name: Lint with Checkstyle  # Runs Checkstyle for code quality analysis
         run: mvn checkstyle:checkstyle
-        working-directory: ./arosaje-backend
 
   # Job for building and pushing Docker image
   docker-build-and-push:
@@ -58,10 +55,9 @@ jobs:
       - uses: actions/download-artifact@v2  # Downloads the JAR artifact from the build job
         with:
           name: backend-jar
-          path: ./arosaje-backend/target
+          path: ./target
       - name: Build Docker image  # Builds the Docker image using the Dockerfile
         run: docker build -t ghcr.io/alexandrelefay/arosaje-mspr/arosaje-backend:latest .
-        working-directory: ./arosaje-backend
       - name: Log in to GitHub Container Registry  # Logs into GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -98,7 +94,6 @@ jobs:
       # Build the project and generate coverage report
       - name: Build with Maven and generate coverage report
         run: mvn -B clean verify --file pom.xml -Dspring.profiles.active=test
-        working-directory: ./arosaje-backend
       # Run SonarCloud Scan
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
