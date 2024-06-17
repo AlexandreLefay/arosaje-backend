@@ -18,4 +18,4 @@ FROM eclipse-temurin:17-jre-alpine
 COPY --from=builder /app/target/*.jar app.jar
 
 # Commande pour exécuter l'application
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar", "--server.port=8080"]
