@@ -118,7 +118,7 @@ jobs:
       - name: Install Clever Tools
         run: npm install -g clever-tools
       - name: Clever Deploy
-        run: clever deploy
+        run: clever deploy --force
         env:
           CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
           CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
