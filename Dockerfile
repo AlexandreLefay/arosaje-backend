@@ -17,7 +17,5 @@ FROM eclipse-temurin:17-jre-alpine
 # Copier le fichier JAR généré depuis l'étape de build
 COPY --from=builder /app/target/*.jar app.jar
 
-EXPOSE 9000
-
 # Commande pour exécuter l'application
 CMD ["java", "-jar", "app.jar"]
