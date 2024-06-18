@@ -11,6 +11,8 @@ import fr.epsi.mspr.arosaje.exception.user.UserNotFoundException;
 import fr.epsi.mspr.arosaje.repository.PlantRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -67,18 +69,16 @@ public class PlantService {
      * @return a list of plants for the specified user.
      * @throws UserNotFoundException if the user with the specified ID does not exist.
      */
-    public List<PlantDto> findByUserId(Long userId) {
+    public Page<PlantDto> findByUserId(Long userId, Pageable pageable) {
 
         if (!userService.userExists(userId)) {
             log.info(USER_NOT_FOUND, userId);
             throw new UserNotFoundException(userId);
         }
 
-        List<Plant> plants = plantRepository.findByUserId(userId);
+        Page<Plant> plants = plantRepository.findByUserId(userId, pageable);
 
-        return plants.stream()
-                .map(plantMapper::plantToPlantResponseDto)
-                .collect(Collectors.toList());
+        return plants.map(plantMapper::plantToPlantResponseDto);
     }
 
     /**

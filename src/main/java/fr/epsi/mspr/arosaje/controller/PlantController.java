@@ -6,6 +6,10 @@ import fr.epsi.mspr.arosaje.entity.dto.plant.validation.MandatoryPlanId;
 import fr.epsi.mspr.arosaje.entity.dto.plant.validation.OptionnalPlantId;
 import fr.epsi.mspr.arosaje.service.PlantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +42,15 @@ public class PlantController {
      * @return the list of plants.
      */
     @GetMapping("/user/{Id}")
-    public List<PlantDto> getAllPlantsByUserId(@PathVariable Long Id) {
-        return plantService.findByUserId(Id);
+    public Page<PlantDto> getAllPlantsByUserId(
+            @PathVariable Long Id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size,
+            @RequestParam(defaultValue = "asc") String sortDirection,
+            @RequestParam(defaultValue = "id") String sortBy) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy);
+        return plantService.findByUserId(Id, pageable);
     }
 
 
