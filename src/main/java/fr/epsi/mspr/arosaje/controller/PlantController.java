@@ -34,24 +34,24 @@ public class PlantController {
     /**
      * Retrieves all plants for a specific user.
      *
-     * @param userId The ID of the user to retrieve plants for.
+     * @param Id The ID of the user to retrieve plants for.
      * @return the list of plants.
      */
-    @GetMapping("/user/{userId}")
-    public List<PlantDto> getAllPlantsByUserId(@PathVariable Long userId) {
-        return plantService.findByUserId(userId);
+    @GetMapping("/user/{Id}")
+    public List<PlantDto> getAllPlantsByUserId(@PathVariable Long Id) {
+        return plantService.findByUserId(Id);
     }
 
 
     /**
      * Retrieves a plant by its ID.
      *
-     * @param plantId The ID of the plant to retrieve.
+     * @param id The ID of the plant to retrieve.
      * @return the plant.
      */
-    @GetMapping("/{plantId}")
-    public PlantDto getPlantById(@PathVariable Long plantId) {
-        return plantService.findById(plantId);
+    @GetMapping("/{id}")
+    public PlantDto getPlantById(@PathVariable Long id) {
+        return plantService.findById(id);
     }
 
     /**

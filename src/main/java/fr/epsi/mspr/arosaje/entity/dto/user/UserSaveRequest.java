@@ -58,10 +58,6 @@ public class UserSaveRequest {
      */
     private float x;
     private float y;
-    /**
-     * The user password
-     */
-    private String password;
 
     /**
      * The auth0Id of the user for google authentification

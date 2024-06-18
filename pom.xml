@@ -29,12 +29,19 @@
 
     <!-- Project Dependencies -->
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
         <!-- Spring Boot Starter for JPA (Java Persistence API) for database operations -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
         <!-- Spring Boot Starter for building web applications including RESTful services -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -107,7 +114,7 @@
             <version>2.3.0</version>
         </dependency>
 
-        <!-- Java JWT (JSON Web Token) library for creating and verifying JWT tokens -->
+        <!-- Java JWT (JSON Web Token) library for creating and verifying JWT tokens (PROBABLEMENT PLUS UTLISEE)-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>

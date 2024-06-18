@@ -52,6 +52,7 @@ public class User {
     /**
      * The auth0Id of the user for google authentification
      */
+    @Column(unique = true)
     private String auth0Id;
 
     /**
@@ -73,10 +74,7 @@ public class User {
      */
     private float x;
     private float y;
-    /**
-     * The password of the user
-     */
-    private String password;
+
 
     /**
      * The date when the user was created and updated

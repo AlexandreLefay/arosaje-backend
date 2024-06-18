@@ -42,7 +42,7 @@ public class GuardianshipController {
      * @return the list of guardianships.
      * @throws UserNotFoundException if the user with the specified ID does not exist.
      */
-    @GetMapping("/user/{ownerUserId}")
+    @GetMapping("/user/{owner}/{Id}")
     public List<GuardianshipDTO> getAllGuardianshipsByOwnerUserId(Long ownerUserId) {
         return guardianshipService.findAllByOwnerUserId(ownerUserId);
     }
@@ -54,7 +54,7 @@ public class GuardianshipController {
      * @return the list of guardianships.
      * @throws UserNotFoundException if the user with the specified ID does not exist.
      */
-    @GetMapping("/guardian/{guardianUserId}")
+    @GetMapping("/user/{guardian}/{Id}")
     public List<GuardianshipDTO> getAllGuardianshipsByGuardianUserId(Long guardianUserId) {
         return guardianshipService.findAllByGuardianUserId(guardianUserId);
     }

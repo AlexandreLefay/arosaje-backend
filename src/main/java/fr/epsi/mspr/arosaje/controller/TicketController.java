@@ -52,7 +52,7 @@ public class TicketController {
      * @param userId The ID of the user to retrieve tickets for.
      * @return ResponseEntity containing a list of TicketResponseDTOs for each ticket.
      */
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user/{Id}")
     public ResponseEntity<List<TicketResponseDTO>> getAllTicketsForUser(@PathVariable Long userId) {
         List<TicketResponseDTO> tickets = ticketService.getAllTicketsByUserId(userId);
         return ResponseEntity.ok(tickets);
